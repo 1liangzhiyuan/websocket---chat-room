@@ -1,0 +1,59 @@
+.header {
+    height: 100px;
+    display: flex;
+}
+.header .logo {
+    flex: 1;
+    background: url(../img/logo.png) no-repeat left top;
+}
+.header .text {
+    width: 320px;
+    background: url(../img/text.png) no-repeat left top;
+}
+.content {
+    margin: 30px auto 20px;
+}
+.panel.inner {
+    padding: 0;
+    min-height: 400px;
+}
+.icon-list {
+    min-height: 60px;
+}
+.user {
+    border: 1px solid #ddd;
+    display: flex;
+    margin-top: 20px;
+}
+.user input {
+    flex: 1;
+    padding: 10px;
+    height: 80px;
+    outline: none;
+    border: none;
+}
+.user span {
+    display: inline-block;
+    width: 200px;
+    background-color: #efefef;
+    border-left: 1px solid #ddd;
+    font-size: 20px;
+    text-align: center;
+    line-height: 80px;
+}
+.user-item {
+    margin: 15px;
+    border: 1px solid #ddd;
+    line-height: 36px;
+    height: 36px;
+    padding-left: 20px;
+    font-size: 16px;
+}
+.msg-item {
+    margin: 15px;
+    border: 1px solid #ddd;
+    padding-left: 20px;
+    font-size: 16px;
+    line-height: 1;
+    padding: 10px 20px;
+}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>爱创课堂聊天室</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"></div>
+            <div class="text"></div>
+        </div>
+        <div class="username">昵称: <strong></strong></div>
+        <div class="row content">
+            <div class="col-xs-4 inner panel panel-default">
+                <div class="panel-heading">用户列表</div>
+                <div class="body user-list"></div>
+            </div>
+            <div class="col-xs-8 inner panel panel-default">
+                <div class="panel-heading">发言列表</div>
+                <div class="body msg-list"></div>
+            </div>
+        </div>
+        <div class="icon-list"></div>
+        <div class="user">
+            <input type="text" class="user-input">
+            <span class="submit">发言</span>
+        </div>
+    </div>
+    <!-- 引入socket文件 -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script>
+    // 获取容器
+    let $iconList = $('.icon-list');
+    // 获取容器
+    let $userList = $('.user-list');
+    // 提交按钮
+    let $submit = $('.submit');
+    // 信息容器
+    let $msgList = $('.msg-list');
+    // 获取输入框
+    let $userInput = $('.user-input');
+    // 创建socket
+    let socket = io();
+    // 监听连接
+    socket.on('connect', function() {
+        // 监听face消息
+        socket.on('face', function(data) {
+            // console.log(data);
+            // 清空
+            $iconList.html('')
+            // 将数据渲染出来
+            data.forEach(item => $iconList.append(`<img data-name="${item.split('.')[0]}" src="/face/${item}" alt="">`))
+        })
+        // 进入页面要求输入用户名
+        var username = prompt('请输入用户名') || '匿名用户'
+        // 显示用户名
+        $('.username strong').html(username)
+        // console.log(username, 111);
+        // 向服务器端发送消息
+        socket.emit('createUser', username)
+        // 监听用户进入
+        socket.on('userEnter', function(arr) {
+            // console.log(arr);
+            // 清空
+            $userList.html('')
+            // 渲染用户
+            arr.forEach(item => $userList.append(`<div class="user-item">${item}</div>`))
+        })
+        // 封装发送消息
+        function send() {
+            // 获取输入框的值
+            var value = $userInput.val();
+            // 没有数据，不能提交的
+            if (/^\s*$/.test(value)) {
+                return;
+            }
+            // console.log(value)
+            // 清空内容
+            $userInput.val('')
+            // 可以提交
+            socket.emit('msg', value, username)
+        }
+
+        document.onkeyup = function(e) {
+            if(e.key === 'Enter') {
+                send();
+            }
+            return 
+        }
+
+        // 提交数据
+        $submit.click(function() {
+            send();
+        })
+        // 显示信息
+        socket.on('showMsg', function(value, username) {
+            // 将消息显示出来
+            $msgList.append(`
+                <div class="msg-item">
+                    <span>${username}</span>
+                    <span> 说: </span>
+                    <span>${value}</span>
+                </div>
+            `)
+        })
+        // 点击图片，获取图片名称
+        $iconList.delegate('img', 'click', function() {
+            // 获取图片名称
+            var name = $(this).data('name');
+            // console.log(name)
+            // 设置input的内容
+            $userInput.val($userInput.val() + `[${name}]`)
+        })
+    })
+    </script>
+    <script>
+    </script>
+</body>
+</html>
